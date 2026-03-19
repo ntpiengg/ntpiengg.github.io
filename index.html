@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NTPI — Engineering Tools</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0f14;
+      --surface: #13161d;
+      --border: #1f2330;
+      --accent: #c8a96e;
+      --accent-dim: rgba(200, 169, 110, 0.12);
+      --text: #e8e4dc;
+      --text-muted: #6b7080;
+      --text-sub: #9499a6;
+      --card-hover: #191d28;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(200,169,110,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,169,110,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── HEADER ── */
+    header {
+      padding: 5rem 0 3rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.7s ease forwards;
+    }
+
+    .eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+    }
+
+    .name {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      line-height: 1;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .name em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .tagline {
+      margin-top: 1.4rem;
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      letter-spacing: 0.06em;
+      max-width: 380px;
+      line-height: 1.7;
+    }
+
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: var(--accent);
+      margin: 2.5rem 0;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.2s ease forwards;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.3s ease forwards;
+    }
+
+    /* ── PROJECT CARDS ── */
+    .projects {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.4s ease forwards;
+    }
+
+    .card {
+      display: flex;
+      align-items: stretch;
+      background: var(--surface);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s ease;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:last-child { border-bottom: none; }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--accent);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.25s ease;
+    }
+
+    .card:hover { background: var(--card-hover); }
+    .card:hover::before { transform: scaleY(1); }
+
+    .card-index {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      flex-shrink: 0;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      border-right: 1px solid var(--border);
+      padding: 1.8rem 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .card-body {
+      padding: 1.6rem 1.8rem;
+      flex: 1;
+    }
+
+    .card-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+      letter-spacing: -0.01em;
+      transition: color 0.2s;
+    }
+
+    .card:hover .card-title { color: var(--accent); }
+
+    .card-desc {
+      font-size: 0.72rem;
+      color: var(--text-sub);
+      line-height: 1.6;
+      letter-spacing: 0.03em;
+    }
+
+    .card-url {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      margin-top: 0.8rem;
+      letter-spacing: 0.08em;
+    }
+
+    .card-arrow {
+      display: flex;
+      align-items: center;
+      padding: 0 1.6rem;
+      color: var(--text-muted);
+      font-size: 1rem;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .card:hover .card-arrow {
+      color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 4rem 0 3rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.6s ease forwards;
+    }
+
+    .footer-line {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 2rem;
+    }
+
+    .footer-text {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .footer-text a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ── ANIMATION ── */
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 520px) {
+      .card-index { width: 40px; font-size: 0.6rem; }
+      .card-body { padding: 1.2rem 1.2rem; }
+      .card-arrow { padding: 0 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <p class="eyebrow">Engineering Portfolio</p>
+      <h1 class="name">NT<em>PI</em></h1>
+      <p class="tagline">A collection of engineering tools and calculators built for practical use in the field.</p>
+    </header>
+
+    <div class="divider"></div>
+
+    <p class="section-label">Projects</p>
+
+    <div class="projects">
+
+      <a class="card" href="https://ntpiengg.github.io/hotpress/" target="_blank" rel="noopener">
+        <div class="card-index">01</div>
+        <div class="card-body">
+          <div class="card-title">Hot Press Pressure Calculator</div>
+          <div class="card-desc">Part pressure calculator for hot press operations — compute and verify pressing parameters with ease.</div>
+          <div class="card-url">ntpiengg.github.io/hotpress/</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://ntpiengg.github.io/conversions/" target="_blank" rel="noopener">
+        <div class="card-index">02</div>
+        <div class="card-body">
+          <div class="card-title">Unit Converters</div>
+          <div class="card-desc">A comprehensive suite of unit conversion tools for common engineering measurements and quantities.</div>
+          <div class="card-url">ntpiengg.github.io/conversions/</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="https://ntpiengg.github.io/Resistance-calculator/" target="_blank" rel="noopener">
+        <div class="card-index">02</div>
+        <div class="card-body">
+          <div class="card-title">Trace Resistance Calculator</div>
+          <div class="card-desc">Trace Resistance calculation.</div>
+          <div class="card-url">ntpiengg.github.io/Resistance-calculator/</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+
+    </div>
+
+    <footer>
+      <div class="footer-line"></div>
+      <p class="footer-text">
+        NTPI Engineering &nbsp;·&nbsp;
+        <a href="https://github.com/ntpiengg" target="_blank" rel="noopener">github.com/ntpiengg</a>
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>
